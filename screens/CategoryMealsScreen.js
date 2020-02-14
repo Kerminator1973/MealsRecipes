@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { CATEGORIES} from '../data/dummy-data';
+import { View, Text, Button, StyleSheet, Platform } from 'react-native';
+import { CATEGORIES } from '../data/dummy-data';
+import Colors from '../constants/Colors';
 
 
 const CategoryMealScreen = props => {
@@ -10,7 +11,6 @@ const CategoryMealScreen = props => {
     // которого мы перешли сюда (см. renderGridItem() в
     // компоненте CategoriesScreen)
     const catId = props.navigation.getParam('categoryId');
-
     const selectedCategory = CATEGORIES.find(cat => cat.id === catId);
 
     return (
@@ -22,6 +22,27 @@ const CategoryMealScreen = props => {
             }} />            
         </View>
     );
+};
+
+// Свойство navigationOptions может быть определено как функция.
+// В этом случае, React Navigation передаёт объект navigationData,
+// который является тем же самым, что и props.navigation
+// в функциональном компоненте.
+// Мы делаем так из-за того, что navigationOptions находится
+// вне функционального компонента и мы не имеем доступа к props,
+// чо не позволяет извлечь из props параметры (см. getParam())
+CategoryMealScreen.navigationOptions = (navigationData) => {
+
+    const catId = navigationData.navigation.getParam('categoryId');
+    const selectedCategory = CATEGORIES.find(cat => cat.id === catId);
+
+    return {
+        headerTitle: selectedCategory.title,
+        headerStyle: {
+            backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
+        },
+        headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primaryColor
+    };
 };
 
 const styles = StyleSheet.create({
