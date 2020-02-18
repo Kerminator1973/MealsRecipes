@@ -7,27 +7,25 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import { CATEGORIES} from '../data/dummy-data';
+import { CATEGORIES } from '../data/dummy-data';
+import CategoryGridTile from '../components/CategoryGridTile';
 
 const CategoriesScreen = props => {
 
     // Размещаем функцию внутри компонента для того, чтобы
     // иметь доступ к props
     const renderGridItem = (itemData) => {
-        return (
-            <TouchableOpacity style={styles.gridItem} onPress={() => {
+        return <CategoryGridTile 
+            title={itemData.item.title}
+            color={itemData.item.color}
+            onSelect={() => {
                 props.navigation.navigate({
                     routeName: 'CategoryMeals',
                     params: {
                        categoryId: itemData.item.id
                     }
                 });
-            }}>
-                <View>
-                    <Text>{itemData.item.title}</Text>
-                </View>
-            </TouchableOpacity>
-        );
+            }} />;
     }
 
     // Важно понимать, что все компоненты, которые участвуют
@@ -64,11 +62,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    gridItem: {
-        flex: 1,
-        margin: 15,
-        height: 150
-    }
 });
 
 export default CategoriesScreen;
