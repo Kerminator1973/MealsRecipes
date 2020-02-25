@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 10,
         backgroundColor: '#f5f5f5',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        marginVertical: 10
     },
     bgImage: {
         width: '100%',
