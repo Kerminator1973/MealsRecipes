@@ -31,3 +31,37 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 ```
 
 В приведённых выше командах установки используется npm, но в практичесих задачах я использую [yarn](https://yarnpkg.com/).
+
+# Совместное использование различных типов навигационных компонентов
+
+В React Native можно комбинировать различные навигационные компоненты, например, сделать TabNavigator родительским (корневым) компонентом, а StackNavigator - добавить как один из дочерних компонентов.
+
+Для того, чтобы определить компонент, который будет выполнять роль корневого следует использовать функцию-обёртку **createAppContainer**(). Ниже приведён соответствующий пример кода (файл MealsNavigator.js):
+
+```javascript
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+
+import CategoriesScreen from '../screens/CategoriesScreen';
+import CategoryMealsScreen from '../screens/CategoryMealsScreen';
+import MealDetailScreen from '../screens/MealDetailScreen';
+import FavoritesScreen from '../screens/FavoritesScreen'; 
+
+const MealsNavigator = createStackNavigator({
+    Catogories: CategoriesScreen,       // Сокращённая форма
+    CategoryMeals: {                    // Полная форма
+        screen: CategoryMealsScreen,
+    },
+    MealDetail: MealDetailScreen
+});
+
+const MealsFavTabNavigator = createBottomTabNavigator({
+    Meals: {
+        screen: MealsNavigator
+    },
+    Favorites: FavoritesScreen
+});
+
+export default createAppContainer(MealsFavTabNavigator);
+```
