@@ -58,7 +58,7 @@ const MealsFavTabNavigator = createBottomTabNavigator({
     Meals: {
         screen: MealsNavigator
     },
-    Favotites: FavoritesScreen
+    Favorites: FavoritesScreen
 });
 
 // Оборачиваем компонент, который является корневым компонентом
