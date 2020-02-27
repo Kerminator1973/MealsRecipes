@@ -46,12 +46,13 @@ const CategoryMealScreen = props => {
 };
 
 // Свойство navigationOptions может быть определено как функция.
+
 // В этом случае, React Navigation передаёт объект navigationData,
 // который является тем же самым, что и props.navigation
 // в функциональном компоненте.
 // Мы делаем так из-за того, что navigationOptions находится
 // вне функционального компонента и мы не имеем доступа к props,
-// чо не позволяет извлечь из props параметры (см. getParam())
+// что не позволяет извлечь из props параметры (см. getParam())
 CategoryMealScreen.navigationOptions = (navigationData) => {
 
     const catId = navigationData.navigation.getParam('categoryId');

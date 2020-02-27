@@ -1,6 +1,8 @@
+import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 
 import CategoriesScreen from '../screens/CategoriesScreen';
@@ -56,9 +58,28 @@ const MealsNavigator = createStackNavigator({
 // случае, MealsNavigator встраивается в MealsFavTabNavigator
 const MealsFavTabNavigator = createBottomTabNavigator({
     Meals: {
-        screen: MealsNavigator
+        screen: MealsNavigator, 
+        navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <Ionicons name='ios-restaurant' size={25} 
+                    color={tabInfo.tintColor} />
+            }
+        }
     },
-    Favorites: FavoritesScreen
+    Favorites: {
+        screen: FavoritesScreen,
+        navigationOptions: {
+            tabBarLabel: 'My Favorites!',
+            tabBarIcon: (tabInfo) => {
+                return <Ionicons name='ios-star' size={25} 
+                    color={tabInfo.tintColor} />
+            }
+        }
+    }
+}, {
+    tabBarOptions: {
+        activeTintColor: Colors.accentColor
+    }
 });
 
 // Оборачиваем компонент, который является корневым компонентом
