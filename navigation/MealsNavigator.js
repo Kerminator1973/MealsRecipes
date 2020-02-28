@@ -17,8 +17,7 @@ const defaultStackNavOptions = {
             ? Colors.primaryColor : ''
     },
     headerTintColor: Platform.OS === 'android' 
-        ? 'white' : Colors.primaryColor,
-    headerTitle: 'A Screen'
+        ? 'white' : Colors.primaryColor
 };
 
 
