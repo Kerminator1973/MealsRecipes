@@ -11,6 +11,17 @@ import MealDetailScreen from '../screens/MealDetailScreen';
 import FavoritesScreen from '../screens/FavoritesScreen'; 
 import Colors from '../constants/Colors';
 
+const defaultStackNavOptions = {
+    headerStyle: {
+        backgroundColor: Platform.OS === 'android' 
+            ? Colors.primaryColor : ''
+    },
+    headerTintColor: Platform.OS === 'android' 
+        ? 'white' : Colors.primaryColor,
+    headerTitle: 'A Screen'
+};
+
+
 // Определяем идентификаторы компонентов, которые могут быть
 // использованы в Stack-компоненте: Catogories, CategoryMeals и
 // MealDetail. Имена идентификаторов могут быть произвольными
@@ -44,12 +55,19 @@ const MealsNavigator = createStackNavigator({
 // указать настройки "по умолчанию" для всех экранов в Stack.
 // Именно такой подход является рекомендуемым!
 {
-    defaultNavigationOptions: {
-        headerStyle: {
-            backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
-        },
-        headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primaryColor
-    }
+    defaultNavigationOptions: defaultStackNavOptions
+});
+
+// Создаём ещё один StackNavigator для отображения любимых
+// продуктов. Ключевая идея состоит в том, что из списка
+// любимых продуктов мы можем попасть на страницу с детальным
+// описанием продукта. Самый простой способ сделать это -
+// создать ещё один вспомогательный Stack
+const FavNavigator = createStackNavigator({
+    Favorites: FavoritesScreen,
+    MealDetail: MealDetailScreen
+}, {
+    defaultNavigationOptions: defaultStackNavOptions
 });
 
 // Создаём ещё один навигационный орган управления - BottomTabNavigator.
@@ -67,7 +85,7 @@ const MealsFavTabNavigator = createBottomTabNavigator({
         }
     },
     Favorites: {
-        screen: FavoritesScreen,
+        screen: FavNavigator,
         navigationOptions: {
             tabBarLabel: 'My Favorites!',
             tabBarIcon: (tabInfo) => {
