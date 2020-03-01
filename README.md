@@ -66,6 +66,8 @@ const MealsFavTabNavigator = createBottomTabNavigator({
 export default createAppContainer(MealsFavTabNavigator);
 ```
 
+Вызов функции **createAppContainer**() позволяет явно указать, какой из навигационных компонентов является корневым.
+
 # Настройка стилей навигационных компонентов
 
 Генерацию компонентов, выполняющих навигационные задачи выполняют такие функции-обёртки, как: createBottomTabNavigator(), createStackNavigator(). Первый параметр - JavaScript-объект, описывает связь между элементом навигации (Tab, Stack-элемент) и экранной формой, а второй параметр позволяет указать стилистические особенности оформления элементов навигации.
