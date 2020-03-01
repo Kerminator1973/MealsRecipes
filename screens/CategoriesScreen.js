@@ -51,13 +51,21 @@ const CategoriesScreen = props => {
 // navigationOptions. Если такое поле есть, то оно трактуется
 // как словарь настроек. В частности, свойство headerTitle
 // трактуется как заголовок формы
-CategoriesScreen.navigationOptions = {
-    headerTitle: 'Meal Categories',
-    headerLeft: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item title="Menu" iconName="ios-menu" onPress={() => {}} />
-        </HeaderButtons>
-    )
+CategoriesScreen.navigationOptions = (navData) => {
+    return {
+        headerTitle: 'Meal Categories',
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item 
+                    title="Menu" 
+                    iconName="ios-menu" 
+                    onPress={() => {
+                        navData.navigation.toggleDrawer()
+                    }}
+                />
+            </HeaderButtons>
+        )
+    }
 };
 
 const styles = StyleSheet.create({
