@@ -65,3 +65,45 @@ const MealsFavTabNavigator = createBottomTabNavigator({
 
 export default createAppContainer(MealsFavTabNavigator);
 ```
+
+# Настройка стилей навигационных компонентов
+
+Генерацию компонентов, выполняющих навигационные задачи выполняют такие функции-обёртки, как: createBottomTabNavigator(), createStackNavigator(). Первый параметр - JavaScript-объект, описывает связь между элементом навигации (Tab, Stack-элемент) и экранной формой, а второй параметр позволяет указать стилистические особенности оформления элементов навигации.
+
+Предположим, что у нас есть объект настраивающий цвета заголовка навигационного элемента:
+
+```javascript
+const defaultStackNavOptions = {
+    headerStyle: {
+        backgroundColor: Platform.OS === 'android' 
+            ? Colors.primaryColor : ''
+    },
+    headerTintColor: Platform.OS === 'android' 
+        ? 'white' : Colors.primaryColor
+};
+```
+
+Мы можем использовать этот объект для настройки параметров каждого из навигационных компонентов:
+
+```javascript
+const MealsNavigator = createStackNavigator({
+    Catogories: CategoriesScreen,
+    CategoryMeals: CategoryMealsScreen,
+    MealDetail: MealDetailScreen
+},        
+{   // Настраиваем стиль оформления заголовка для StackNavigator
+    defaultNavigationOptions: defaultStackNavOptions
+});
+```
+
+Второй компонент используется и для настройки BottonTabNavigator:
+
+```javascript
+const MealsFavTabNavigator = createBottomTabNavigator({
+...
+}, {
+    tabBarOptions: {
+        activeTintColor: Colors.accentColor
+    }
+});
+```
