@@ -2,6 +2,7 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 
@@ -9,6 +10,7 @@ import CategoriesScreen from '../screens/CategoriesScreen';
 import CategoryMealsScreen from '../screens/CategoryMealsScreen';
 import MealDetailScreen from '../screens/MealDetailScreen';
 import FavoritesScreen from '../screens/FavoritesScreen'; 
+import FiltersScreen from '../screens/FiltersScreen';
 import Colors from '../constants/Colors';
 
 const defaultStackNavOptions = {
@@ -99,11 +101,27 @@ const MealsFavTabNavigator = createBottomTabNavigator({
     }
 });
 
+// Создаём вспомогательный Stack
+const FiltersNavigator = createStackNavigator({
+    Filters: FiltersScreen
+})
+
+// Определяем Drawer Navigator, который будет являться
+// корневым элементом нашей навигационной системы
+const MainNavigator = createDrawerNavigator({
+    MealsFavs: MealsFavTabNavigator,
+    Filters: FiltersNavigator
+}, {
+
+});
+
 // Оборачиваем компонент, который является корневым компонентом
 // системы навигации специализированным контейнером.
 // Если бы мы хотели использовать в качестве навигационного
 // компонента только Stack, то следовало бы указать в качестве
-// корневого компонента MealsNavigator. Поскольку в приложении
-// корневой компонент - это BottomTabNavigator, указываем 
-// MealsFavTabNavigator
-export default createAppContainer(MealsFavTabNavigator);
+// корневого компонента MealsNavigator. Некоторое время
+// корневым компонентом был BottomTabNavigator и мы указывали
+// MealsFavTabNavigator, как root. 
+// Поскольку сейчас  в приложении корневой компонент - это 
+// DrawerNavigator, указываем MainNavigator
+export default createAppContainer(MainNavigator);
