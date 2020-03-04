@@ -18,6 +18,12 @@ const defaultStackNavOptions = {
         backgroundColor: Platform.OS === 'android' 
             ? Colors.primaryColor : ''
     },
+    headerTitleStyle: { // Изменяем шрифт заголовка
+        fontFamily: 'open-sans-bold'
+    },
+    headerBackTitleStyle: { // Back text работает только на iOS
+        fontFamily: 'open-sans'
+    },    
     headerTintColor: Platform.OS === 'android' 
         ? 'white' : Colors.primaryColor
 };
@@ -96,8 +102,12 @@ const MealsFavTabNavigator = createBottomTabNavigator({
         }
     }
 }, {
-    tabBarOptions: {
-        activeTintColor: Colors.accentColor
+    tabBarOptions: {    // Настраиваем стили шрифта в BottomTabNavigator
+        activeTintColor: Colors.accentColor,
+        labelStyle: {
+            fontSize: 14,
+            fontFamily: 'open-sans'
+        }
     }
 });
 
