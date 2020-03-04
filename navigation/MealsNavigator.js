@@ -104,15 +104,35 @@ const MealsFavTabNavigator = createBottomTabNavigator({
 // Создаём вспомогательный Stack
 const FiltersNavigator = createStackNavigator({
     Filters: FiltersScreen
-})
+}, {
+    // Можно было-бы изменить текст в DrawerNavigator
+    // следующим образом:
+    //navigationOptions: {
+    //   drawerLabel: 'Filters!!!' 
+    //},
+    defaultNavigationOptions: defaultStackNavOptions
+});
 
 // Определяем Drawer Navigator, который будет являться
 // корневым элементом нашей навигационной системы
 const MainNavigator = createDrawerNavigator({
-    MealsFavs: MealsFavTabNavigator,
+    MealsFavs: {
+        screen: MealsFavTabNavigator,
+        navigationOptions: {
+            drawerLabel: 'Meals'    // Заменяем текст с "MealsFav" на "Meals"
+        }
+    },
     Filters: FiltersNavigator
 }, {
-
+    // Изменяем шрифт и цвет текста в DrawerNavigator
+    contentOptions: {
+        activeTintColor: Colors.accentColor,
+        labelStyle: {
+            fontSize: 20,
+            fontWeight: 'normal',
+            //fontFamily: 'open-sans-bold'  // TODO: Разобраться , почему всегда используется 'open-sans-bold'
+        }
+    }
 });
 
 // Оборачиваем компонент, который является корневым компонентом
