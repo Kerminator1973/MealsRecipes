@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Switch, Platform } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
@@ -23,6 +23,7 @@ const FilterSwitch = props => {
 };
 
 const FiltersScreen = props => {
+
     // Для динамически изменяемых элементов пользовательского
     // интерфейса, к которым относится Switch, необходимо применять
     // State Management для управляения их состоянием
@@ -30,6 +31,43 @@ const FiltersScreen = props => {
     const [isLactoseFree, setIsLactoseFree] = useState(false);
     const [isVegan, setIsVegan] = useState(false);
     const [isVegetarian, setIsVegetarian] = useState(false);
+
+    // Это трюк, который позволяет использовать navigation без указания
+    // перед ним props. См. useEffect()
+    const { navigation } = props;
+
+    // Функция сохраняет текущие состояния органов управления в отдельный объект.
+    // useCallback() - является вспомогательным wrapper-ом, который вернёт изменённую
+    // callback-функцию только в том случае, если измениться одна из указанных
+    // зависимостей (они перечислены в квадратных скобках). Эта оптимизация позволяет
+    // избежать ненужных перерисовок
+    const saveFilters = useCallback(() => {
+        const appliedFilters = {
+            glutenFree: isGlutenFree,
+            lactoseFree: isLactoseFree,
+            vegan: isVegan,
+            vegetarian: isVegetarian
+        };
+
+        console.log(appliedFilters);
+    }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian]);
+
+    // Функция, являющаяся аргументом useEffect() вызывается каждый раз
+    // при обновлении компонента, но после того, как рендеринг выполнен.
+    // В этот момент мы помещаем указатель на функцию saveFilters в
+    // props.navigation, используя функцию setParams().
+    // Указатель на эту функцию можно будет извлечь в обработчике onPress()
+    // внутри FiltersScreen.navigationOptions и вызывать.
+    // Второй параметр позволяет указать список переменных, изменение 
+    // которых не должно приводить к re-rendering-у компонента. Это
+    // так называемые "зависимости". В нашем случае, не следует выполнять
+    // re-rendering в случае изменения функции saveFilters(), т.к.
+    // сама эта функция изменяется при изменении свойств формы. Если бы
+    // мы делали re-rendering, он был бы уже производный, не обязательный,
+    // т.к. функция изменяется только при изменении свойств
+    useEffect(() => {
+        navigation.setParams({save: saveFilters});
+    }, [saveFilters]);
 
     return (
         <View style={styles.screen}>
@@ -56,6 +94,17 @@ FiltersScreen.navigationOptions = (navData) => {
                     iconName="ios-menu" 
                     onPress={() => {
                         navData.navigation.toggleDrawer()
+                    }}
+                />
+            </HeaderButtons>
+        ),
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item 
+                    title="Menu" 
+                    iconName="ios-save" 
+                    onPress={() => {
+                        navData.navigation.getParam('save')();
                     }}
                 />
             </HeaderButtons>
