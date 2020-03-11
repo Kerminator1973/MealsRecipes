@@ -1,6 +1,7 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import { CATEGORIES, MEALS } from '../data/dummy-data';
+import { CATEGORIES } from '../data/dummy-data';
 import MealList from '../components/MealList';
 
 const CategoryMealScreen = props => {
@@ -10,8 +11,15 @@ const CategoryMealScreen = props => {
     // которого мы перешли сюда (см. renderGridItem() в
     // компоненте CategoriesScreen)
     const catId = props.navigation.getParam('categoryId');
+
+    // Используем функцию useSelector() для доступа к Redux Store,
+    // определённому в App.js. В словаре rootReducer мы определили
+    // запись с ключом meals, с которым связан mealsReducer из
+    // файла './store/reducers/meals'. В этом файле определено,
+    // в том числе, состояние filteredMeals
+    const availableMeals = useSelector(state => state.meals.filteredMeals);
     
-    const displayedMeals = MEALS.filter(
+    const displayedMeals = availableMeals.filter(
         meal => meal.categoryIds.indexOf(catId) >= 0
     );
 

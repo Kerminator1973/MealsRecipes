@@ -3,15 +3,15 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import HeaderButton from '../components/HeaderButton';
 import MealList from '../components/MealList';
-import { MEALS } from '../data/dummy-data';
+import { useSelector } from 'react-redux';
 
 
 const FavoritesScreen = props => {
 
-    // Извлекаем из dummy-data пару элементов, которые будут временно
-    // играть роль назначенных любимых блюд
-    const favMeals = MEALS.filter(meal => meal.id === 'm1' || meal.id === 'm2');
+    // Используем Redux Store для доступа к глобальным свойствам приложения
+    const favMeals = useSelector(state => state.meals.meals);
 
+    // Используем полученные данных для формирования списка блюд
     return <MealList listData={favMeals} navigation={props.navigation} />;
 };
 
