@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 const FavoritesScreen = props => {
 
     // Используем Redux Store для доступа к глобальным свойствам приложения
-    const favMeals = useSelector(state => state.meals.meals);
+    const favMeals = useSelector(state => state.meals.favoriteMeals);
 
     // Используем полученные данных для формирования списка блюд
     return <MealList listData={favMeals} navigation={props.navigation} />;
