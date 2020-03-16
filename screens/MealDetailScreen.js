@@ -28,8 +28,15 @@ const ListItem = props => {
 const MealDetailScreen = props => {
 
     const availableMeals = useSelector(state => state.meals.meals);
-
     const mealId = props.navigation.getParam('mealId');
+
+    // Метод some() возвращает true, если в контейнере есть значение
+    // удовлетворяющее условию, указанному в callback-функции.
+    // Фактически, мы проверяем, есть ли в favoriteMeals элемент
+    // с идентификатором mealId
+    const currentMealIsFavorite = useSelector(state => 
+        state.meals.favoriteMeals.some(meal => meal.id === mealId));
+
     const selectedMeal = availableMeals.find(meal => meal.id === mealId);
 
     // Определяем объект dispatch, который позволяет вызывать action
@@ -48,9 +55,15 @@ const MealDetailScreen = props => {
     // осуществляется через props.navigation. Явно указываем, что
     // изменение функции toggleFavoriteHandler не должно приводить к
     // повторному re-rendering-у компонента
+    //
+    // Добавляем в navigation params информацию о том, находится ли
+    // текущее блюдо в списке популярных, или нет
     useEffect(() => {
-        props.navigation.setParams({toggleFav: toggleFavoriteHandler});
-    }, [toggleFavoriteHandler]);
+        props.navigation.setParams({
+            toggleFav: toggleFavoriteHandler,
+            isFav: currentMealIsFavorite
+        });
+    }, [toggleFavoriteHandler, currentMealIsFavorite]);
 
     return (
         <ScrollView>
@@ -78,13 +91,14 @@ MealDetailScreen.navigationOptions = (navigationData) => {
 
     const mealTitle = navigationData.navigation.getParam('mealTitle');
     const toggleFavorite = navigationData.navigation.getParam('toggleFav');
+    const isFavorite = navigationData.navigation.getParam('isFav');
 
     return {
         headerTitle: mealTitle,
         headerRight: () => (<HeaderButtons HeaderButtonComponent={HeaderButton}>
             <Item 
                 title="Favorite"
-                iconName="ios-star" 
+                iconName={isFavorite ? "ios-star" : 'ios-star-outline'}
                 onPress={toggleFavorite}
             />
             </HeaderButtons>)
