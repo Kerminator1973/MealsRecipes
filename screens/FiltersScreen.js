@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Switch, Platform } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useDispatch } from 'react-redux';
 
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
+import { setFilters } from '../store/actions/meals';
 
 
 const FilterSwitch = props => {
@@ -32,6 +34,10 @@ const FiltersScreen = props => {
     const [isVegan, setIsVegan] = useState(false);
     const [isVegetarian, setIsVegetarian] = useState(false);
 
+    // Объект dispatch мы создаём для того, чтобы иметь возможность
+    // закэшировать его в hook-е useCallback, см.: [...,dispatch]
+    const dispatch = useDispatch();
+
     // Это трюк, который позволяет использовать navigation без указания
     // перед ним props. См. useEffect()
     const { navigation } = props;
@@ -49,8 +55,15 @@ const FiltersScreen = props => {
             vegetarian: isVegetarian
         };
 
-        console.log(appliedFilters);
-    }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian]);
+        // Применяем действие setFilters() из файла '../store/actions/meals',
+        // передав ему в качестве параметра appliedFilters (значения органов
+        // управления текущей формы). Эти действие будет обработано
+        // Reducer-ом и разослано всем подписчикам, посредством вызова
+        // функции dispatch(), значение которой сгенерировано hook-ом
+        // useDispatch()
+        dispatch(setFilters(appliedFilters));
+
+    }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian, dispatch]);
 
     // Функция, являющаяся аргументом useEffect() вызывается каждый раз
     // при обновлении компонента, но после того, как рендеринг выполнен.
