@@ -98,7 +98,7 @@ const MealsNavigator = createStackNavigator({
 });
 ```
 
-Второй компонент используется и для настройки BottonTabNavigator:
+Второй компонент используется и для настройки BottomTabNavigator:
 
 ```javascript
 const MealsFavTabNavigator = createBottomTabNavigator({
@@ -108,6 +108,63 @@ const MealsFavTabNavigator = createBottomTabNavigator({
         activeTintColor: Colors.accentColor
     }
 });
+```
+
+# Альтернативные реализации Bottom Tab Navigator
+
+Одной из проблем React Native считается слабая дифференциация пользовательского интерфейса в приложениях Android и iOS. Примером того, как можно решить эту проблему является применение разных реализаций Bottom Tab Navigator в одном приложении.
+
+Package Material Bottom Tabs реализует Tabs в соответствии с требованиями Material Design и выглядит более Native. Установить package можно командой: ```npm install --save react-navigation-material-bottom-tabs```. Дополнительно следует поставить package: ```npm install --save react-native-paper```
+
+Демонстрационное приложение содержит код работы с обоими реализациями Tab-навигатора, но в зависимости от платформы, использует один, или другой. Setup-код, практически, одинаковый, но для создания компонента обёртки используются разные метода: createMaterialBottomTabNavigator(), или createBottomTabNavigator().
+
+Вариант Material Design выглядит впечатляюще: применяет трансформационный **shifting**-эффект, поясняющий текст появляется только у активного элемента. Кроме этого, можно реализовать **ripple**-эффект плавного изменения цвета фона BottomTab при выборе другой закладки.
+
+Ниже приведён пример реализации:
+
+```javascript
+const MealsFavTabNavigator = Platform.OS === 'android'
+    ? createMaterialBottomTabNavigator(tabScreenConfig, {
+        activeColor: 'white',
+        shifting: true
+    })
+    : createBottomTabNavigator(tabScreenConfig, {
+        tabBarOptions: {    // Настраиваем стили шрифта в BottomTabNavigator
+            activeTintColor: Colors.accentColor,
+            labelStyle: {
+                fontSize: 14,
+                fontFamily: 'open-sans'
+            }
+        }
+    });
+```
+
+При использовании обоих библиотек, конфигурационная структура выглядит одинаково и это позволяет определить её только один раз:
+
+```javascript
+const tabScreenConfig = {
+    Meals: {
+        screen: MealsNavigator, 
+        navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <Ionicons name='ios-restaurant' size={25} 
+                    color={tabInfo.tintColor} />
+            },
+            tabBarColor: Colors.primaryColor
+        }
+    },
+    Favorites: {
+        screen: FavNavigator,
+        navigationOptions: {
+            tabBarLabel: 'My Favorites!',
+            tabBarIcon: (tabInfo) => {
+                return <Ionicons name='ios-star' size={25} 
+                    color={tabInfo.tintColor} />
+            },
+            tabBarColor: Colors.accentColor
+        }
+    }
+};
 ```
 
 # Работа с состоянием приложения (Redux Store)
