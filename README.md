@@ -109,3 +109,80 @@ const MealsFavTabNavigator = createBottomTabNavigator({
     }
 });
 ```
+
+# Работа с состоянием приложения (Redux Store)
+
+В компоненте может произойти событие, которое влияет на состояние всего приложения. Когда такое случается возникает некоторое действие (action). **Action** – это некоторая функция, принимающая некоторый набор аргументов. Подобная функция возвращает словарь, в котором есть поле type (тип действия) и набор дополнительных параметров (любых).
+
+Для активации действия используется специальный hook, под названием **useDispatch**(). Часто этот hook используется совместно с другим hook-ом под названием **useCallback**() для оптимизации перерисовок компонента. В общем случае схема выглядит так:
+
+```javascript
+import { useDispatch } from 'react-redux';
+...
+const FiltersScreen = props => {
+	...
+	const dispatch = useDispatch();
+	...
+	const saveFilters = useCallback(() => {
+		...
+		dispatch(setFilters(appliedFilters)); // <-- Здесь мы запускаем "действие"
+	}, [..., dispatch]);
+```
+
+В приведённом выше коде, функция **saveFilters**() вызывается, когда нажимается кнопка «Save» в пользовательском интерфейсе и с этого момента начинается изменение состояния приложения.
+
+Код, генерируемый hook-ом useDispatch(), приводит к тому, что вызываются т.н. reducer-ы – функции, которые изменяют состояние приложения. Регистрация reducer-ов осуществляется в файле «App.js» (на самом высоком уровне). Выглядеть это может так:
+
+```javascript
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+...
+const rootReducer = combineReducers({
+  meals: mealsReducer
+});
+const store = createStore(rootReducer);
+...
+export default function App() {
+  return (
+    <Provider store={store}><MealsNavigator /></Provider>
+  );
+}
+```
+
+В приведённом выше коде крайне важным является использование компонента **Provider** в JSX-коде, который встраивает Redux Store в систему hook-ов React Native.
+
+Redux передаёт инициированное действие reducer-ам, которые являются функцией, возвращающей новое состояние приложения. Чаще всего, reducer менять только некоторую часть состояния, например:
+
+```javascript
+const mealsReducer = (state = initialState, action) => {
+    switch (action.type) {
+	...
+	case SET_FILTERS:
+		const appliedFilters = action.filters;
+		const updatedFilteredMeals = state.meals.filter(meal => {...
+		});
+		return {...state, filteredMeals: updatedFilteredMeals};
+    }
+    return state;
+}
+```
+
+При изменении состояния приложения все компоненты, которые используют Redux Store будут перегенерированы (re-rendered). Получить текущее состояние приложения можно используя hook **useSelector**():
+
+```javascript
+const CategoryMealScreen = props => {
+    const availableMeals = useSelector(state => state.meals.filteredMeals);
+	...
+	const displayedMeals = availableMeals.filter(
+		meal => meal.categoryIds.indexOf(catId) >= 0
+    );
+    return (
+        <MealList listData={displayedMeals} navigation={props.navigation} />
+    );
+};
+```
+
+Отличная статья: https://academind.com/learn/react/redux-vs-context-api/#what-is-redux
+
+Принципиально, можно разработать App State Management System и без Redux, используя только hooks.
+Redux прекрасно подходит для больших приложений, но у него есть восходящий конкурент – Context API: https://academind.com/learn/react/redux-vs-context-api/
