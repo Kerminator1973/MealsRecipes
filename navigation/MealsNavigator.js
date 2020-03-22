@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
 
 import CategoriesScreen from '../screens/CategoriesScreen';
 import CategoryMealsScreen from '../screens/CategoryMealsScreen';
@@ -77,11 +78,10 @@ const FavNavigator = createStackNavigator({
     defaultNavigationOptions: defaultStackNavOptions
 });
 
-// Создаём ещё один навигационный орган управления - BottomTabNavigator.
-// Описание компонента очень похоже на описание элементов Stack-а.
-// Элементы Stack-а могут быть встроены в BottomTabNavigator - в нашем
-// случае, MealsNavigator встраивается в MealsFavTabNavigator
-const MealsFavTabNavigator = createBottomTabNavigator({
+// Конфигурационные данные, которые позволяют настроить содержимое
+// Tab Screen для обоих вариантов отображения Bottom Tab - обычного
+// и построенного в соответствии с рекомендациями Material Design
+const tabScreenConfig = {
     Meals: {
         screen: MealsNavigator, 
         navigationOptions: {
@@ -101,15 +101,26 @@ const MealsFavTabNavigator = createBottomTabNavigator({
             }
         }
     }
-}, {
-    tabBarOptions: {    // Настраиваем стили шрифта в BottomTabNavigator
-        activeTintColor: Colors.accentColor,
-        labelStyle: {
-            fontSize: 14,
-            fontFamily: 'open-sans'
+};
+
+// Создаём ещё один навигационный орган управления - BottomTabNavigator.
+// Описание компонента очень похоже на описание элементов Stack-а.
+// Элементы Stack-а могут быть встроены в BottomTabNavigator - в нашем
+// случае, MealsNavigator встраивается в MealsFavTabNavigator
+const MealsFavTabNavigator = Platform.OS === 'android'
+    ? createMaterialBottomTabNavigator(tabScreenConfig, {
+        activeColor: Colors.accentColor,
+        shifting: true
+    })
+    : createBottomTabNavigator(tabScreenConfig, {
+        tabBarOptions: {    // Настраиваем стили шрифта в BottomTabNavigator
+            activeTintColor: Colors.accentColor,
+            labelStyle: {
+                fontSize: 14,
+                fontFamily: 'open-sans'
+            }
         }
-    }
-});
+    });
 
 // Создаём вспомогательный Stack
 const FiltersNavigator = createStackNavigator({
